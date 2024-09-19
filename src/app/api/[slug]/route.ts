@@ -1,9 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+
 const prisma = new PrismaClient();
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const slug = url.pathname.split("/").pop();
+
+export async function GET(
+  request: Request,
+  { params }: { params: { slug: string } }
+) {
+  const { slug } = params;
 
   if (!slug) {
     return NextResponse.json({ message: "Slug is missing" }, { status: 400 });

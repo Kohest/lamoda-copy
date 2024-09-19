@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
       where: { id: verificationCode.id },
     });
 
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/", req.nextUrl.origin));
   } catch (error) {
     console.error(error);
     return NextResponse.json(
