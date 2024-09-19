@@ -1,0 +1,388 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  fullName         String
+  email            String            @unique
+  password         String
+  role             UserRole          @default(USER)
+  verified         DateTime?
+  subscribed       DateTime?
+  avatar           String?
+  provider         String?
+  providerId       String?
+  favorites        Favorite[]
+  cart             Cart?
+  orders           Order[]
+  verificationCode VerificationCode?
+  subscriptionCode SubscriptionCode?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Favorite {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  productId Int
+  user      User    @relation(fields: [userId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  token String
+
+  totalAmount Int
+  status      OrderStatus
+  paymentId   String?
+
+  items Json
+
+  fullName String
+  email    String
+  phone    String
+  address  String
+  comment  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationCode {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+
+  code String
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, code])
+}
+
+model SubscriptionCode {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+
+  code String
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, code])
+}
+
+model Page {
+  id              Int                   @id @default(autoincrement())
+  name            String                @unique
+  slug            String                @unique
+  sliders         Slider[]
+  products        Product[]
+  promotions      Promotion[]
+  advertisements  Advertisement[]
+  journal         Journal?
+  categories      Category[]
+  productSliders  ProductSlider[]
+  mainBanners     MainBanner[]          @relation("PageMainBanners")
+  relevantSection RelevantSectionGroup?
+  adBanner        AdBanner?
+}
+
+model AdBanner {
+  id       Int    @id @default(autoincrement())
+  imageUrl String
+  link     String
+  pageId   Int    @unique
+  page     Page   @relation(fields: [pageId], references: [id])
+}
+
+model Slider {
+  id         Int          @id @default(autoincrement())
+  link       String
+  title      String
+  subtitle   String?
+  imageUrl   String
+  pageId     Int
+  page       Page         @relation(fields: [pageId], references: [id])
+  SliderLink SliderLink[]
+}
+
+model RelevantSection {
+  id        Int                  @id @default(autoincrement())
+  link      String
+  imageUrl  String
+  title     String
+  subtitle  String
+  sectionId Int
+  section   RelevantSectionGroup @relation(fields: [sectionId], references: [id])
+
+  @@map("relevant_sections")
+}
+
+model RelevantSectionGroup {
+  id       Int               @id @default(autoincrement())
+  name     String
+  pageId   Int               @unique
+  page     Page              @relation(fields: [pageId], references: [id])
+  sections RelevantSection[]
+
+  @@map("relevant_section_groups")
+}
+
+model SliderLink {
+  id       Int    @id @default(autoincrement())
+  url      String
+  iconUrl  String
+  sliderId Int
+  slider   Slider @relation(fields: [sliderId], references: [id])
+}
+
+model ProductSlider {
+  id     Int                 @id @default(autoincrement())
+  title  String
+  link   String
+  items  ProductSliderItem[]
+  pageId Int
+  page   Page                @relation(fields: [pageId], references: [id])
+
+  @@map("product_sliders")
+}
+
+model ProductSliderItem {
+  id        Int           @id @default(autoincrement())
+  productId Int
+  sliderId  Int
+  product   Product       @relation(fields: [productId], references: [id])
+  slider    ProductSlider @relation(fields: [sliderId], references: [id])
+
+  @@map("product_slider_items")
+}
+
+model Product {
+  id                 Int                    @id @default(autoincrement())
+  title              String
+  subtitle           String
+  price              String
+  discount           String?
+  link               String
+  description        String?
+  images             ProductImage[]
+  sizes              ProductSize[]
+  categories         ProductCategory[]      @relation("ProductToCategory")
+  subcategories      ProductToSubcategory[]
+  types              Type[]
+  productSliderItems ProductSliderItem[]
+  Page               Page?                  @relation(fields: [pageId], references: [id])
+  pageId             Int?
+  composition        String?
+  modelSize          String?
+  modelParams        String?
+  modelHeight        Float?
+  length             Float?
+  sleeveLength       Float?
+  season             String?
+  country            String?
+  color              String?
+  CartItem           CartItem[]
+  Favorite           Favorite[]
+}
+
+model ProductCategory {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[] @relation("ProductToCategory")
+
+  @@map("product_categories")
+}
+
+model Cart {
+  id Int @id @default(autoincrement())
+
+  items CartItem[]
+
+  token String
+
+  user        User? @relation(fields: [userId], references: [id])
+  userId      Int?  @unique
+  totalAmount Int   @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  size      Int?
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  imageUrl  String
+  altText   String?
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model ProductToSubcategory {
+  id            Int          @id @default(autoincrement())
+  name          String?
+  productId     Int?
+  subcategoryId Int?
+  product       Product?     @relation(fields: [productId], references: [id])
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+}
+
+model ProductSize {
+  id        Int     @id @default(autoincrement())
+  size      String
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Promotion {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  discount    Float
+  page        Page    @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  pageId      Int
+}
+
+model Advertisement {
+  id       Int     @id @default(autoincrement())
+  imageUrl String
+  title    String
+  subtitle String?
+  link     String
+  pageId   Int
+  page     Page    @relation(fields: [pageId], references: [id])
+}
+
+model Journal {
+  id               Int            @id @default(autoincrement())
+  title            String
+  link             String
+  standaloneItem   StandaloneItem @relation(fields: [standaloneItemId], references: [id])
+  standaloneItemId Int            @unique
+  items            JournalItem[]
+  page             Page?          @relation(fields: [pageId], references: [id])
+  pageId           Int?           @unique
+}
+
+model StandaloneItem {
+  id         Int      @id @default(autoincrement())
+  title      String
+  subtitle   String
+  link       String
+  image      String
+  badgeText  String
+  badgeColor String
+  journal    Journal? @relation
+  journalId  Int?     @unique
+}
+
+model JournalItem {
+  id         Int     @id @default(autoincrement())
+  title      String
+  image      String?
+  link       String
+  badgeText  String
+  badgeColor String
+  journal    Journal @relation(fields: [journalId], references: [id])
+  journalId  Int
+}
+
+model Category {
+  id            Int     @id @default(autoincrement())
+  name          String
+  page          Page    @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  pageId        Int
+  types         Type[]
+  linkUrl       String
+  imageUrl      String?
+  imageTitle    String?
+  imageSubtitle String?
+}
+
+model Type {
+  id            Int           @id @default(autoincrement())
+  name          String
+  linkUrl       String
+  category      Category?     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId    Int?
+  subcategories Subcategory[]
+  products      Product[]
+}
+
+model Subcategory {
+  id        Int                    @id @default(autoincrement())
+  name      String
+  type      Type?                  @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  typeId    Int?
+  linkUrl   String
+  imageUrl  String?
+  products  ProductToSubcategory[]
+  productId Int?
+}
+
+model MainBanner {
+  id             Int                       @id @default(autoincrement())
+  page           Page                      @relation("PageMainBanners", fields: [pageId], references: [id])
+  pageId         Int
+  sliderElements MainBannerSliderElement[]
+  items          BannerItem[]
+}
+
+model MainBannerSliderElement {
+  id       Int        @id @default(autoincrement())
+  image    String
+  video    String?
+  title    String
+  subtitle String
+  link     String
+  banner   MainBanner @relation(fields: [bannerId], references: [id])
+  bannerId Int
+}
+
+model BannerItem {
+  id       Int        @id @default(autoincrement())
+  title    String
+  subtitle String
+  image    String
+  link     String
+  banner   MainBanner @relation(fields: [bannerId], references: [id])
+  bannerId Int
+}
+
+enum OrderStatus {
+  PENDING
+  SUCCEEDED
+  CANCELLED
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}

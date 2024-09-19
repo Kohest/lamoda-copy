@@ -1,0 +1,31 @@
+.main_banner1 {
+  height: 634px;
+  display: grid;
+  font-size: 21px;
+  grid-template-columns: 894px 283px;
+  grid-template-rows: 1fr 1fr;
+  gap: 41px 24px;
+  margin-bottom: 64px;
+}
+.main_banner1 div:nth-child(1) {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.main_banner2 {
+  height: 634px;
+  font-size: 21px;
+  display: grid;
+  grid-template-columns: 283px 894px;
+  grid-template-rows: 1fr 1fr;
+  gap: 41px 24px;
+  margin-bottom: 64px;
+}
+.main_banner2 div:nth-child(1) {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}

@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url("../fonts/Cofo-Sans/stylesheet.css");
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  font-family: 'CoFo Sans';
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+/* Links */
+
+
+/* Common */
+
+aside, nav, footer, header, section, main {
+	display: block;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    font-size: inherit;
+	font-weight: inherit;
+}
+
+ul, ul li {
+	list-style: none;
+}
+
+img {
+	vertical-align: top;
+}
+
+img, svg {
+	max-width: 100%;
+}
+
+address {
+  font-style: normal;
+}
+
+/* Form */
+
+input, textarea, button, select {
+	font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background-color: transparent;
+}
+
+input::-ms-clear {
+	display: none;
+}
+
+button, input[type="submit"] {
+    display: inline-block;
+    box-shadow: none;
+    background-color: transparent;
+    background: none;
+    cursor: pointer;
+}
+
+input:focus, input:active,
+button:focus, button:active {
+    outline: none;
+}
+
+
+label {
+	cursor: pointer;
+}
+
+legend {
+	display: block;
+}
+.arrow{
+  @apply absolute mt-[-28px] h-[56px] w-[56px]  bg-[#fff] z-30 rounded-[50%] cursor-pointer shadow-[0_2px_8px_#00000014] after:bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAxMiAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEuMDYwMTggMUwxMS4wODUyIDE1TDEuMDYwMTggMjkiIHN0cm9rZT0iYmxhY2siLz4KPC9zdmc+')] after:absolute after:top-[14px] after:left-[22px]  after:w-[12px] after:h-[28px] 
+
+}
+
+
+.main_banner1 {
+  height: 634px;
+  display: grid;
+  font-size: 21px;
+  grid-template-columns: 894px 283px;
+  grid-template-rows: 1fr 1fr;
+  gap: 41px 24px;
+  margin-bottom: 64px;
+
+  div:nth-child(1) {
+      grid-column-start: 1;
+      grid-column-end: 2;
+      grid-row-start: 1;
+      grid-row-end: 3;
+  }
+}
+
+.main_banner2 {
+  height: 634px;
+  font-size: 21px;
+  display: grid;
+  grid-template-columns: 283px 894px;
+  grid-template-rows: 1fr 1fr;
+  gap: 41px 24px;
+  margin-bottom: 64px;
+
+  div:nth-child(1) {
+      grid-column-start: 2;
+      grid-column-end: 3;
+      grid-row-start: 1;
+      grid-row-end: 3;
+  }
+}
+.product_page_grid {
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-columns: calc(100% - 312px) 280px;
+  grid-column-gap: 32px;
+  -moz-column-gap: 32px;
+  column-gap: 32px;
+  grid-template-areas: 
+  "gallery aside"
+  "sets-and-series aside"
+  "content aside"
+  "recommendations recommendations";
+}

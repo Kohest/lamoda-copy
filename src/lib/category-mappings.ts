@@ -1,0 +1,17 @@
+export const categoryMappings: Record<string, string> = {
+  new: "Новинки",
+  clothes: "Одежда",
+  shoes: "Обувь",
+  accessories: "Аксессуары",
+  sport: "Спорт",
+  resale: "Ресейл",
+  beauty: "Красота",
+  house: "Дом",
+  sale: "Распродажа",
+  girls: "Девочкам",
+  boys: "Мальчикам",
+  toddlers: "Малышам",
+  premium: "Premium",
+  brands: "Бренды",
+  ideas: "Идеи",
+};
